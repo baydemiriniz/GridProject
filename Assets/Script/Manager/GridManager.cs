@@ -6,14 +6,15 @@ using UnityEngine.UI;
 
 public class GridManager : MonoBehaviour
 {
+    public float GridBoundX => CellSize * gridSize;
     private List<int> selectButtonInt = new List<int>();
-    private int spawnSize;
+    private int gridSize;
     private const float CellSize = 1f;
-    [Header("References")]
+
+    [Header("References")] 
     [SerializeField] private Transform gridHolder;
     [SerializeField] private Tile tileButton;
-    [SerializeField] private Text inputText;
-
+    
     private void ClearGrid()
     {
         selectButtonInt.Clear();
@@ -25,11 +26,11 @@ public class GridManager : MonoBehaviour
 
     private void SpawnButtons()
     {
-        Vector2 startPos = new Vector2(-spawnSize / 2f + (CellSize / 2f), -spawnSize / 2f + (CellSize / 2f));
+        Vector2 startPos = new Vector2(-gridSize / 2f + (CellSize / 2f), -gridSize / 2f + (CellSize / 2f));
         var counter = 0;
-        for (int x = 0; x < spawnSize; x++)
+        for (int x = 0; x < gridSize; x++)
         {
-            for (int y = 0; y < spawnSize; y++)
+            for (int y = 0; y < gridSize; y++)
             {
                 Tile button = Instantiate(tileButton, startPos, Quaternion.identity, gridHolder);
                 button.id = counter + 1;
@@ -39,7 +40,7 @@ public class GridManager : MonoBehaviour
             }
 
             startPos.x += CellSize;
-            startPos.y -= spawnSize;
+            startPos.y -= gridSize;
         }
     }
 
@@ -49,10 +50,10 @@ public class GridManager : MonoBehaviour
         LevelControl();
     }
 
-    public void SetGrid()
+    public void SetGrid(int gridSize)
     {
         ClearGrid();
-        spawnSize = int.Parse(inputText.text);
+        this.gridSize = gridSize;
         SpawnButtons();
     }
 
@@ -68,33 +69,33 @@ public class GridManager : MonoBehaviour
         {
             int currentButtonId = selectButtonInt[i];
 
-            if ((lastButtonId - 1 == currentButtonId && (currentButtonId % spawnSize != 0)) ||
-                (lastButtonId + 1 == currentButtonId && (lastButtonId % spawnSize != 0)) ||
-                lastButtonId - spawnSize == currentButtonId ||
-                lastButtonId + spawnSize == currentButtonId)
+            if ((lastButtonId - 1 == currentButtonId && (currentButtonId % gridSize != 0)) ||
+                (lastButtonId + 1 == currentButtonId && (lastButtonId % gridSize != 0)) ||
+                lastButtonId - gridSize == currentButtonId ||
+                lastButtonId + gridSize == currentButtonId)
             {
                 for (int j = 0; j < lastButtonIndex; j++)
                 {
                     int compareButtonId = selectButtonInt[j];
 
-                    if (currentButtonId - spawnSize == compareButtonId ||
-                        currentButtonId + spawnSize == compareButtonId ||
-                        (currentButtonId - 1 == compareButtonId && (compareButtonId % spawnSize != 0)) ||
-                        (currentButtonId + 1 == compareButtonId && (currentButtonId % spawnSize != 0)))
+                    if (currentButtonId - gridSize == compareButtonId ||
+                        currentButtonId + gridSize == compareButtonId ||
+                        (currentButtonId - 1 == compareButtonId && (compareButtonId % gridSize != 0)) ||
+                        (currentButtonId + 1 == compareButtonId && (currentButtonId % gridSize != 0)))
                     {
-                        SetGrid();
+                        SetGrid(gridSize);
                         return;
                     }
 
                     if (j != i)
                     {
-                        if (lastButtonId - spawnSize == compareButtonId ||
-                            lastButtonId + spawnSize == compareButtonId ||
-                            (lastButtonId - 1 == compareButtonId && (compareButtonId % spawnSize != 0)) ||
-                            (lastButtonId + 1 == compareButtonId && (lastButtonId % spawnSize != 0)))
+                        if (lastButtonId - gridSize == compareButtonId ||
+                            lastButtonId + gridSize == compareButtonId ||
+                            (lastButtonId - 1 == compareButtonId && (compareButtonId % gridSize != 0)) ||
+                            (lastButtonId + 1 == compareButtonId && (lastButtonId % gridSize != 0)))
                         {
                             Debug.Log(lastButtonId + " / " + compareButtonId);
-                            SetGrid();
+                            SetGrid(gridSize);
                             return;
                         }
                     }
